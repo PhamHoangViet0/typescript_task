@@ -58,16 +58,39 @@ async function mockServerCheckOutput(url: string, resultDiv: HTMLDivElement) {
  * @param {number} limit throttle time in ms
  * @returns wrapped function
  */
-const throttle = (func: Function, limit: number) => {
+function throttle<T extends (...args: any[]) => void>(func: T, limit: number) {
+    /** @type {boolean} indicates throttling*/
     let inThrottle: boolean = false;
-    return function (this: any, ...args: any[]) {
+    /** @type {boolean} indicates if function was called while throttling*/
+    let inThrottleUpdate: boolean = false;
+
+    // stores recent call arguments while throttling
+    let lastArgs: any[];
+    let lastThis: any | null = null;
+  
+    function wrapper(this: ThisParameterType<T>, ...args: Parameters<T>) {
+      
         if (!inThrottle) {
             func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => (inThrottle = false), limit);
+            inThrottle = true
+            setTimeout(() => {
+                if (inThrottleUpdate) {
+                    func.apply(lastThis, lastArgs);
+                    inThrottleUpdate = false;
+                    setTimeout(() => {inThrottle = false}, limit);
+                } else {
+                    inThrottle = false
+                }
+            }, limit);
+        } else {
+            inThrottleUpdate = true;
+            lastArgs = args;
+            lastThis = this;
         }
-    };
-};
+    }
+  
+    return wrapper as T;
+}
 
 // create throttled check
 const throttledmockServerCheckOutput = throttle(mockServerCheckOutput, 3000);
