@@ -16,3 +16,7 @@ commit comments
 d9bc59634747caf7654b974705a6c117487588b4
     throttling work not as expected
     first valid url input works but server check does not happen when throttle done, even if input was updated
+
+5d780b0c7e10adfab4963f21d3e31dc9ed191766
+    actually not fixed problem
+    fix works only once, so fo long inputs still works incorrectly
