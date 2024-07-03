@@ -66,22 +66,30 @@ function throttle<T extends (...args: any[]) => void>(func: T, limit: number) {
 
     // stores recent call arguments while throttling
     let lastArgs: any[];
-    let lastThis: any | null = null;
+    let lastThis: any;
+
+    /**
+     * Function that holds inThrottle in true state, and checks if there was call while throttle
+     * performs call with most recent args if needed
+     */
+    function holdThrottle() {
+        inThrottle = true
+        setTimeout(() => {
+            if (inThrottleUpdate) {
+                func.apply(lastThis, lastArgs);
+                inThrottleUpdate = false;
+                holdThrottle();
+            } else {
+                inThrottle = false
+            }
+        }, limit);
+    }
   
     function wrapper(this: ThisParameterType<T>, ...args: Parameters<T>) {
       
         if (!inThrottle) {
             func.apply(this, args);
-            inThrottle = true
-            setTimeout(() => {
-                if (inThrottleUpdate) {
-                    func.apply(lastThis, lastArgs);
-                    inThrottleUpdate = false;
-                    setTimeout(() => {inThrottle = false}, limit);
-                } else {
-                    inThrottle = false
-                }
-            }, limit);
+            holdThrottle()
         } else {
             inThrottleUpdate = true;
             lastArgs = args;
@@ -106,13 +114,14 @@ function checkUrl(event: Event) {
     // const input = document.getElementById('url-input') as HTMLInputElement;
     const resultDiv = document.getElementById('result') as HTMLDivElement;
     const url = input.value.trim();
-    console.log(url)
+    // console.log(url)
 
     if (!isValidUrl(url)) {
         resultDiv.textContent = `${url} Invalid URL format.`;
         return;
     }
     
+    // console.log('calling throttledmockServerCheckOutput for', url)
     throttledmockServerCheckOutput(url, resultDiv)
 }
 
