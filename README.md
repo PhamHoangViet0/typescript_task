@@ -20,3 +20,6 @@ d9bc59634747caf7654b974705a6c117487588b4
 5d780b0c7e10adfab4963f21d3e31dc9ed191766
     actually not fixed problem
     fix works only once, so fo long inputs still works incorrectly
+
+9b146fb3bac9b099f0bf200b71a8f6d58caf35b3
+    seems that problem fixed
