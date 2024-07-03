@@ -11,3 +11,8 @@ To compile TS code
 npm install
 npx tsc 
 
+
+commit comments
+d9bc59634747caf7654b974705a6c117487588b4
+    throttling work not as expected
+    first valid url input works but server check does not happen when throttle done, even if input was updated
