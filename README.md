@@ -23,3 +23,8 @@ d9bc59634747caf7654b974705a6c117487588b4
 
 9b146fb3bac9b099f0bf200b71a8f6d58caf35b3
     seems that problem fixed
+
+fd510ca13b82645fa23cf6da1049a018cd21d8bf
+    fixed problem when the server returns the result, it is displayed even when the URL had been changed in the meantime, so an incorrect result is shown for a short while
+
+    fixed similar problem when URL become invalid before the server returns the result
